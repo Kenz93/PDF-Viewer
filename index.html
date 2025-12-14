@@ -2,23 +2,50 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <title>PDF Reader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Reader PWA</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="manifest" href="manifest.json" />
     <meta name="theme-color" content="#1976d2" />
   </head>
   <body>
-    <h2>PDF Reader</h2>
+    <header>
+      <h1>PDF Reader</h1>
+    </header>
 
-    <input type="file" id="fileInput" accept="application/pdf" />
-    <canvas id="pdfCanvas"></canvas>
+    <main>
+      <input type="file" id="fileInput" accept="application/pdf" />
 
-    <!-- PDF.js -->
+      <div id="pdf-container">
+        <div id="loader" class="hidden">Memuat PDF...</div>
+        <canvas id="pdfCanvas"></canvas>
+      </div>
+
+      <div id="controls" class="hidden">
+        <button id="prevPage">Sebelumnya</button>
+        <span id="pageInfo"
+          >Halaman <span id="currentPage">1</span> dari
+          <span id="totalPages">1</span></span
+        >
+        <button id="nextPage">Selanjutnya</button>
+      </div>
+    </main>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="app.js"></script>
     <script>
+      // Pastikan Service Worker terdaftar setelah halaman dimuat
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("sw.js");
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js").then(
+            (registration) => {
+              console.log("SW terdaftar:", registration.scope);
+            },
+            (err) => {
+              console.log("Gagal mendaftar SW:", err);
+            }
+          );
+        });
       }
     </script>
   </body>
